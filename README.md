@@ -1,195 +1,195 @@
-# 🧠 Symbolic Memory Network
+# 🌟 NeuroSymbolic Memory Network (NSMN)
+### Explainable Multi-Hop Reasoning with Neural Embeddings + Symbolic Graph Inference
 
-*A Hybrid Neuro-Symbolic Reasoning Engine for Knowledge Storage, Retrieval, and Logical Inference*
-
----
-
-## Overview
-
-The **Symbolic Memory Network (SMN)** is an experimental **neuro-symbolic reasoning framework** that combines **symbolic graph-based memory** with **neural embeddings** and **LLM-based verification** to simulate structured reasoning.
-
-It allows a user to:
-
-* Store natural language facts into an *interpretable symbolic memory graph*
-* Retrieve semantically similar knowledge using vector search
-* Compose and verify reasoning chains using a hybrid **neural + symbolic inference loop**
-
-This project demonstrates how large language models can be augmented with **structured memory**, **semantic embeddings**, and **symbolic logic patterns** — a crucial research direction for building *explainable and trustworthy AI systems*.
+The NeuroSymbolic Memory Network (NSMN) is a hybrid reasoning system that combines neural semantic retrieval with symbolic graph-based inference. It generates transparent, multi-hop explanations from natural-language facts, providing interpretable reasoning instead of black-box answers.
 
 ---
 
-## Architecture Overview
+## 🧠 Key Features
 
-### Core Components
+### 🔹 Triple Extraction
+Natural language facts are converted into structured triples:
 
-#### 1. **Symbol Extraction Layer**
+    (subject) — (relation) — (object)
 
-* Converts raw text into structured symbolic triples (`subject`, `predicate`, `object`).
-* Uses lightweight regex-based pattern recognition (`is a`, `has`, `produces`, etc.).
-* Falls back to “statement” nodes for unstructured input.
-
-#### 2. **Neural Embedding Layer**
-
-* Uses `SentenceTransformer` (MiniLM-L6-v2) to embed facts and queries into vector space.
-* Enables **semantic retrieval** based on conceptual similarity.
-* Supports both CPU-only and optional GPU acceleration.
-
-#### 3. **Memory Store**
-
-* A minimal persistent memory engine (`store.py`) for storing:
-
-  * Symbolic items
-  * Vector embeddings
-  * Metadata (source, timestamp, etc.)
-* Provides **brute-force similarity search** via normalized cosine similarity.
-
-#### 4. **Retriever and Composer**
-
-* Retrieves top-*k* relevant memories for a given query.
-* Composes *chains of reasoning* where facts share overlapping entities (`subj == obj`).
-* Scores chains using average similarity and ranks them.
-
-#### 5. **Verifier (LLM Reasoner)**
-
-* Uses `google/flan-t5-base` (through `transformers` pipeline) to verify whether a reasoning chain supports the user’s query.
-* Produces structured JSON responses (`{"answer": ..., "confidence": ..., "explanation": ...}`) when available.
-* Falls back to heuristic scoring when the verifier is unavailable.
-
-#### 6. **Frontend (Streamlit UI)**
-
-* Interactive dashboard to:
-
-  * Add knowledge facts
-  * Query the system for reasoning
-  * Visualize retrieved chains and memory contents
-* Designed for interpretability and iterative experimentation.
+using a curated set of linguistic patterns capturing:
+causation, transformation, production, essentiality, requirements, part–whole, support, usage, identity, and association.
 
 ---
 
-## Data Flow
-
-```text
-┌───────────────────────┐
-│   User Input (Fact or  │
-│   Question in English) │
-└──────────────────────┌┘
-             │
-             ▼
-     Symbol Extraction
- (Regex + Shallow Parsing)
-             │
-             ▼
-   Neural Embedding (SBERT)
-             │
-             ▼
-  MemoryStore.add(symbol, emb)
-             │
-             ▼
-  ┌───────────────────────────────────────────────┐
-  │  Query: Retrieve &     │
-  │  Compose Reason Chains  │
-  └───────────────────────────────────────────────┘
-             │
-             ▼
-     LLM Verifier (Flan-T5)
-     ⟷ Confidence + Rationale
-             │
-             ▼
-  Streamlit UI: Visualization
-```
+### 🔹 Neural Semantic Retrieval
+Facts are embedded using Sentence Transformers (MiniLM).  
+Queries retrieve relevant facts using cosine similarity, enabling semantic matching even with different wording.
 
 ---
 
-## 🧠 Example Interaction
+### 🔹 Symbolic Knowledge Graph
+Extracted triples form a directed graph:
 
-| Action          | Description                                                                                         |
-| --------------- | --------------------------------------------------------------------------------------------------- |
-| **Add Fact**    | “Photosynthesis produces oxygen” → stored as symbolic relation `(photosynthesis, produces, oxygen)` |
-| **Ask Query**   | “Does photosynthesis generate oxygen?”                                                              |
-| **SMN Process** | Retrieves similar embeddings → finds reasoning chain → verifies via Flan-T5                         |
-| **Output**      | “Yes. Because photosynthesis produces oxygen.” (Confidence: 0.92)                                   |
+    A  --relation-->  B
 
----
-
-## ⚙️ Technologies Used
-
-| Layer               | Library / Tool                         | Purpose                                |
-| ------------------- | -------------------------------------- | -------------------------------------- |
-| **Frontend**        | `Streamlit`                            | Interactive dashboard                  |
-| **Embedding**       | `Sentence-Transformers (MiniLM-L6-v2)` | Semantic encoding of text              |
-| **Verification**    | `Transformers (Flan-T5)`               | Logical verification and justification |
-| **Memory**          | `Numpy`, `Faiss` (optional)            | Efficient similarity search            |
-| **Knowledge Graph** | `NetworkX`, `PyVis`                    | Symbolic relation visualization        |
-| **Core Logic**      | Python (OOP)                           | Modular architecture for extensibility |
+Using networkx, the system performs:
+- multi-hop inference
+- causal/structural chain discovery
+- logical reasoning across facts
 
 ---
 
-## 🗂 Repository Structure
+### 🔹 Multi-Hop Chain Composition
+Given a question, NSMN:
 
-```
-📁 Symbolic-Memory-Network/
-├─ app.py                  # Streamlit frontend
-├─ core.py                 # Core reasoning engine
-├─ store.py                # Memory store implementation
-├─ requirements.txt        # Python dependencies
-└─ README.md               
-```
+1. retrieves relevant facts using embeddings  
+2. explores symbolic graph paths  
+3. composes multi-step reasoning chains  
+4. scores each chain using semantic + structural criteria  
+5. returns a clear, interpretable explanation  
 
----
-
-## Key Innovations
-
-1. **Hybrid Neuro-Symbolic Reasoning**
-
-   * Merges dense embeddings with symbolic pattern extraction.
-2. **Explainable Inference**
-
-   * Every reasoning chain is human-readable.
-3. **Lightweight Cognitive Architecture**
-
-   * Runs entirely on CPU with optional neural modules.
-4. **Modular Design**
-
-   * Encoder, verifier, and retriever are pluggable.
-5. **Self-Contained Memory**
-
-   * Local, interpretable knowledge representation without a database.
+All reasoning steps are fully visible.
 
 ---
 
+### 🔹 Optional LLM Modules
+LLMs are optional (disabled by default). When enabled, they can:
+- provide natural-language rationales  
+- suggest additional bridging facts  
 
-### 3. Add Facts and Ask Questions
-
-* Type sentences like:
-
-  * “Water is a liquid.”
-  * “Liquid has molecules.”
-  * “Do molecules exist in water?”
-* Observe how the system reasons via retrieved symbolic chains.
+The core reasoning remains symbolic and explainable.
 
 ---
 
-## 🧩 Future Directions
+## 🎮 Interactive App
 
-* **Integration with RAG pipelines** for long-context retrieval.
-* **Knowledge Graph visualization panel** for reasoning trace.
-* **Local fine-tuning of verifier** for domain-specific logic.
-* **Temporal reasoning and episodic memory modules.**
+A Streamlit user interface supports:
+
+- adding new facts  
+- asking questions  
+- viewing reasoning chains  
+- inspecting retrieved facts  
+- exploring memory  
+- clearing/resetting the knowledge base  
+
+Run locally with:
+
+    streamlit run app.py
 
 ---
 
-## 🎓 Research Context
+# 🔍 Examples
 
-This project represents an early attempt toward **autonomous reasoning systems** that blend symbolic structure and neural understanding.
-Such hybrid systems aim to overcome the limitations of:
+Below are fully working examples you can paste directly into the app.
 
-* Purely statistical models (which lack explainability)
-* Purely symbolic systems (which lack generalization)
+---
 
-The **Symbolic Memory Network** aligns with active research themes in:
+## ✅ Example 1 — Leaves → Sunlight Reasoning
 
-* **Explainable AI (XAI)**
-* **Neuro-Symbolic Integration**
-* **Cognitive Architectures**
-* **Interpretable Machine Reasoning**
+### Facts:
+
+    Leaves are part of a plant
+    Leaves support photosynthesis
+    Photosynthesis requires sunlight
+
+### Query:
+
+    How are leaves connected to sunlight?
+
+---
+
+## ✅ Example 2 — Ice → Turbine Rotation Reasoning
+
+### Facts:
+
+    Ice turns into water
+    Water turns into steam
+    Steam causes pressure increase
+    Pressure increase leads to turbine rotation
+
+### Query:
+
+    How does ice lead to turbine rotation?
+
+---
+
+# 🧱 Architecture
+                          ┌──────────────────────────────┐
+                          │     Natural Language Input    │
+                          │ (User facts & questions)      │
+                          └───────────────┬──────────────┘
+                                          ▼
+                          ┌──────────────────────────────┐
+                          │       Triple Extraction       │
+                          │ (pattern-based NLP → triples) │
+                          └───────────────┬──────────────┘
+                                          ▼
+              ┌────────────────────────────────────────────────────────┐
+              │                 Symbolic Memory Store                  │
+              │  - stores triples (subj, pred, obj)                    │
+              │  - creates neural embeddings (SentenceTransformer)     │
+              │  - supports cosine similarity retrieval                │
+              └───────────────┬───────────────────────────────┬───────┘
+                              │                               │
+                              ▼                               ▼
+              ┌──────────────────────────────┐   ┌──────────────────────────────┐
+              │      Knowledge Graph         │   │        Neural Retrieval       │
+              │ (networkx DiGraph of triples)│   │ (bruteforce cosine search)    │
+              └───────────────┬──────────────┘   └──────────────┬──────────────┘
+                              │                                 │
+                              └───────────────┬─────────────────┘
+                                              ▼
+                          ┌──────────────────────────────┐
+                          │        Chain Composer         │
+                          │  - local composition          │
+                          │    (object → subject links)   │
+                          │  - graph multi-hop paths      │
+                          │  - generates reasoning chains │
+                          └───────────────┬──────────────┘
+                                          ▼
+                          ┌──────────────────────────────┐
+                          │     Hybrid Scoring Engine     │
+                          │  - semantic similarity        │
+                          │  - lexical overlap            │
+                          │  - chain depth bonus          │
+                          └───────────────┬──────────────┘
+                                          ▼
+                          ┌──────────────────────────────┐
+                          │   Final Explainable Output    │
+                          │ (step-by-step reasoning chain)│
+                          └──────────────────────────────┘
+
+---
+
+# 🏛 Why This Project Matters
+
+NSMN demonstrates:
+
+- hybrid neural–symbolic architecture  
+- interpretable, step-by-step reasoning  
+- multi-hop logical chains  
+- semantic retrieval with embeddings  
+- graph-based inference  
+- optional LLM enhancement without dependency  
+- a clean deployment via Streamlit  
+
+---
+
+# 🔮 Future Directions
+
+- interactive knowledge-graph visualization  
+- FAISS / ScaNN accelerated retrieval  
+- transformer-based relation extraction  
+- differentiable reasoning modules  
+- formal evaluations on chain-depth tasks  
+- integration with retrieval-augmented LLMs  
+
+---
+
+# 📄 Citation
+
+    Agrit Mishra. "NeuroSymbolic Memory Network: 
+    Explainable Multi-Hop Reasoning with Hybrid Neural-Symbolic Architecture." 2025.
+
+---
+
+# 🎓 License
+
+MIT License.
 
