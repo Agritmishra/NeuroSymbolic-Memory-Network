@@ -1,8 +1,0 @@
-streamlit
-sentence-transformers
-transformers
-networkx
-pyvis
-scikit-learn
-faiss-cpu
-numpy
