@@ -1,3 +1,6 @@
+📄 **Technical Report**: [Neuro-Symbolic Memory Network – PDF](./Technical_Report.pdf)
+
+---
 # 🌟 NeuroSymbolic Memory Network (NSMN)
 ### Explainable Multi-Hop Reasoning with Neural Embeddings + Symbolic Graph Inference
 
